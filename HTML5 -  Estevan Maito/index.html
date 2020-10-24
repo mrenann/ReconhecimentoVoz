@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Reconhecimento de Voz</title>
+
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=DB2ne4Rj"></script>
+    <script type="text/javascript">responsiveVoice.setDefaultVoice('Brazilian Portuguese Male')</script>
+</head>
+<body>
+    <h1>Reconhecimento de Voz</h1>
+    <button>Clique e Fale</button>
+    <p>Resultado:</p>
+    <p id="resultado"></p>
+   
+    <script>
+    window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    window.SpeechGrammarList = window.SpeechGrammarList || window.webkitSpeechGrammarList;
+    window.addEventListener("load", function () {
+        let recognition = new window.SpeechRecognition();
+        recognition.grammars = new window.SpeechGrammarList();
+        recognition.continuous = false;
+        recognition.lang = 'pt-BR';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+        document.querySelector("button").addEventListener('click', () =>{
+            recognition.start();
+        });
+        recognition.addEventListener('speechend', () =>{
+            recognition.stop();
+        });
+        
+        recognition.addEventListener('error', (event) => { 
+            document.querySelector("#resultado").textContent = 'Erro no reconhecimento do texto: ' + event.error; 
+        });
+        
+        recognition.onresult = function (event) {
+            let last = event.results.length - 1;
+            let texto = event.results[last][0].transcript;
+            document.querySelector("#resultado").textContent = texto;
+            if(texto.toLowerCase().includes("abrir site")){
+                var textodividido = texto.split("site",2);
+                responsiveVoice.speak("Abrindo site do "+textodividido[1]);
+                
+                window.location.href = 'http://' + textodividido[1].trim() +".com";
+            }
+            else if(texto.toLowerCase()=== "imprimir página"){
+
+                responsiveVoice.speak('Imprimindo Página');
+                rint();
+
+ 
+            } else {
+                responsiveVoice.speak("Não consegui compreender o que foi dito.");
+
+            }
+            
+        }
+    });
+
+    </script>
+</body>
+</html>
